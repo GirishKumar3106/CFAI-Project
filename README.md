@@ -1,155 +1,223 @@
+::: {align="center"}
+# Network Router
 
-Network Router: Shortest Path Visualizer
-A graph-based shortest-path visualizer built as a Computational Foundations of Artificial Intelligence (CFAI) course project. It models a social network as a weighted graph and uses search algorithms to find a route between two people.
+### Shortest Path Visualizer
 
-The application combines a Python Flask backend with an interactive browser-based graph. Instead of viewing an algorithm only as code, users can select two nodes, choose a search algorithm, calculate a route, and see the result highlighted on the network.
+A graph-based route-finding application built for the **Computational
+Foundations of Artificial Intelligence (CFAI)** course.
 
-Repository: GirishKumar3106/CFAI-Project
+Explore how **Dijkstra's, A\*, and IDA\*** search algorithms find routes
+through a weighted network, and compare their theoretical
+characteristics through an interactive visualization.
 
-What the project does
-The application represents people as nodes and their connections as weighted edges. The edge weight represents the cost of moving from one person to another.
+`<br>`{=html}
 
-After selecting a starting person and a target person, the user can run one of the available algorithms. The application returns the route and its total cost, then highlights the selected route in the graph.
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Algorithms](https://img.shields.io/badge/Algorithms-Graph%20Search-16A34A?style=for-the-badge)
+![Project](https://img.shields.io/badge/Course-CFAI-6D5CE7?style=for-the-badge)
+:::Table of Contents
+- Overview
+- How It Works
+- Algorithms
+- Algorithm Comparison
+- Features
+- Technology Stack
+- Project Structure
+- Getting Started
+- Using the Application
+- Understanding the Results
+- Limitations and Future
+  Improvements
+- Contributors
+Overview
+Network Router: Shortest Path Visualizer demonstrates how classical
+graph-search algorithms can be applied to a network-routing problem.
 
-The project currently includes three algorithms:
+The application models a social network as a weighted graph:
+- Nodes represent people in the network.
+- Edges represent connections between people.
+- Edge weights represent the cost of moving between connected
+  people.
+A user selects a starting node and a destination, chooses a search
+algorithm, and runs the route calculation. The application then displays
+the resulting path and its total cost, with the selected route
+highlighted in the graph.
 
-Dijkstra's Algorithm - finds a minimum-cost path in a graph with non-negative edge weights.
-A Search* - uses the cost already travelled and a heuristic estimate of the remaining cost to guide the search.
-Iterative Deepening A (IDA)** - uses repeated depth-first searches with an increasing cost threshold, reducing the memory required by a typical A* search.
-Dijkstra's Algorithm is included as a baseline so that heuristic search approaches can be compared against it.
+The project combines algorithm implementation with a Flask-powered web
+interface to make the search process easier to understand visually.
+How It Works
+The application follows a simple workflow:
+1. Build the network --- represent people as nodes and their
+   connections as weighted edges.
+2. Choose the endpoints --- select the source and destination
+   nodes.
+3. Select an algorithm --- choose Dijkstra's, A*, or IDA*.
+4. Find the route --- run the selected algorithm on the graph.
+5. Visualize the result --- display the path, total cost, and
+   highlighted route.
+6. Compare algorithms --- review the algorithm characteristics
+   presented by the application.
+Algorithms
+1. Dijkstra's Algorithm
+Dijkstra's algorithm finds a minimum-cost path from a source node to
+other reachable nodes in a graph with non-negative edge weights.
+
+It repeatedly selects the unvisited node with the smallest known
+distance and relaxes its neighbouring edges.
+
+Key idea: Expand the currently cheapest known route.
+2. A* Search
+A* is an informed search algorithm. It combines the cost already spent
+with a heuristic estimate of the remaining cost.
+
+Its evaluation function is:
+
+\(f(n) = g(n) + h(n)\)
+
+Where:
+- g(n) is the cost from the start node to the current node.
+- h(n) is the estimated cost from the current node to the goal.
+- f(n) is the estimated total cost of a solution path through that
+  node.
+Key idea: Use both the cost so far and an estimate of the distance
+remaining to guide the search.
+3. Iterative Deepening A* (IDA*)
+IDA* combines the heuristic guidance of A* with the low memory usage
+of iterative deepening depth-first search.
+
+It performs depth-first searches using an increasing threshold based on
+the evaluation function:
+
+\(f(n) = g(n) + h(n)\)
+
+Nodes whose evaluation exceeds the current threshold are not explored in
+that iteration. The threshold is then increased and the search runs
+again.
+
+Key idea: Retain heuristic guidance while avoiding the large memory
+requirements commonly associated with A*.
+Algorithm Comparison
+The following table gives the general theoretical characteristics of
+these algorithms. Actual performance depends on the graph, heuristic,
+data structures, and implementation.
+  Algorithm         Search approach    Typical time         Typical space
+complexity           complexity
+  Dijkstra's        Uninformed,        O((V + E) log V)   O(V + E)
+cost-based         with a binary heap   
+
+  A*               Heuristic-guided   Exponential in the   O(b^d)
+best-first search  worst case, often
+expressed as
+O(b^d)             
+IDA*             Heuristic-guided   Exponential in the   O(bd)
+iterative          worst case, often
+deepening          expressed as
+O(b^d)
+Notation
+- V --- number of vertices (nodes).
+- E --- number of edges.
+- b --- branching factor.
+- d --- depth of the optimal solution.
+Important: These are theoretical reference bounds, not benchmark
+measurements from this application. A* and IDA* performance depends
+heavily on the quality of the heuristic. The complexity shown for
+Dijkstra assumes a binary-heap priority queue and an adjacency-list
+graph representation.
 
 Features
-Interactive weighted graph with nodes and labelled edges.
-Selection of a starting node and destination node.
-Three pathfinding choices: Dijkstra, A*, and IDA*.
-Automatic calculation of the total path cost.
-Step-by-step visual highlighting of the resulting route.
-Ability to add a connection between two people and assign an edge weight.
-Algorithm information displayed after a search, including the configured time-complexity label, completeness, and optimality.
-Flask endpoints that provide graph data and handle pathfinding requests.
-How the algorithms work
-1. Dijkstra's Algorithm
-Dijkstra's Algorithm explores the graph in increasing order of the known path cost from the starting node. It is suitable when edge weights are non-negative and does not require a heuristic.
-
-Purpose: Establishes a shortest-path baseline.
-Typical time complexity: O((V + E) log V) with an adjacency-list graph and a binary heap implementation.
-Typical auxiliary space: O(V) for the priority queue and distance/visited information, in addition to the graph representation.
-2. A* Search
-A* evaluates a node using:
-
-f(n) = g(n) + h(n)
-Where:
-
-g(n) is the actual cost from the start node to the current node.
-h(n) is the estimated cost from the current node to the goal.
-f(n) is the estimated total cost of a path through that node.
-In this project, the heuristic is based on the Euclidean distance between predefined node coordinates. A priority queue is used to select the next candidate.
-
-Purpose: Guide the search towards the destination using a heuristic.
-Typical worst-case time complexity: Exponential in the search depth; commonly expressed as O(b^d) for an uninformed worst-case search-tree bound.
-Typical auxiliary space: Exponential in the search depth because candidate nodes are retained in memory.
-3. Iterative Deepening A* (IDA*)
-IDA* combines heuristic cost evaluation with iterative deepening. It performs depth-first searches while enforcing a threshold on f(n) = g(n) + h(n). When the threshold is exceeded, the algorithm records the next smallest value to use as the threshold for another iteration.
-
-Purpose: Find an optimal route while using less search memory than a typical A* implementation.
-Typical worst-case time complexity: Exponential, commonly expressed as O(b^d).
-Typical auxiliary space: O(bd) for a search tree with branching factor b and solution depth d, excluding the graph representation and implementation-specific overhead.
-Here, V is the number of vertices, E is the number of edges, b is the branching factor, and d is the depth of the solution.
-
-Complexity note: These are general theoretical characteristics, not benchmark results. Actual performance depends on the graph, edge weights, heuristic quality, and implementation. The current application displays configured time-complexity labels and the completeness/optimality properties; it does not yet measure execution time or display space complexity as live metrics.
-
-Technology stack
-Part	Technology
-Backend	Python, Flask
-Frontend	HTML, CSS, JavaScript
-Graph visualization	vis-network
-Search data structures	Python heapq
-Heuristic calculation	Python math module
-Communication	JSON over Flask HTTP routes
-The vis-network JavaScript library is loaded from a CDN in the HTML template, so the browser needs internet access to load that script.
-
-Project structure
+- Interactive graph-based representation of a network.
+- Selection of source and destination nodes.
+- Three route-finding algorithms: Dijkstra's, A*, and IDA*.
+- Weighted connections between nodes.
+- Route calculation with total path cost.
+- Visual highlighting of the selected path.
+- Algorithm information presented alongside the route result.
+- Ability to add connections through the application interface.
+Technology Stack
+  Technology              Purpose
+  Python                  Core programming language and algorithm logic
+Flask                   Web application backend and routing
+HTML, CSS, JavaScript   Browser interface and graph interaction
+Graph representation    Models nodes, edges, and connection weights
+Project Structure
 CFAI-Project/
-├── app.py                 # Flask application, graph data, and search algorithms
-├── requirements.txt        # Python dependencies
-└── templates/
-    └── index.html          # User interface and interactive graph visualization
-Getting started
+│
+├── app.py             # Flask application and route logic
+├── requirements.txt   # Python dependencies
+└── README.md          # Project documentation
+The repository's main application entry point is app.py. The browser
+interface and graph visualization are served through the Flask
+application.
+Getting Started
+Follow these steps to run the project locally.
 Prerequisites
-Python 3.8 or later
-pip
-A modern web browser
-Internet access in the browser to load the vis-network CDN script
+Make sure you have the following installed:
+- Python 3
+- pip (Python package installer)
+- Git
 1. Clone the repository
 git clone https://github.com/GirishKumar3106/CFAI-Project.git
+2. Open the project directory
 cd CFAI-Project
-2. Create a virtual environment (recommended)
-Windows PowerShell:
-
-python -m venv .venv
-.venv\Scripts\Activate.ps1
+3. Create a virtual environment
+Windows:
+python -m venv venv
+venv\Scripts\activate
 Linux / macOS:
-
-python3 -m venv .venv
-source .venv/bin/activate
-3. Install dependencies
+python3 -m venv venv
+source venv/bin/activate
+4. Install dependencies
 pip install -r requirements.txt
-4. Run the application
+5. Run the application
 python app.py
-Open the following address in your browser:
-
+Open the local URL printed in your terminal by Flask. In a standard
+Flask development setup, this is usually:
 http://127.0.0.1:5000
-The Flask application is configured to listen on port 5000.
+Using the Application
+1. Launch the Flask application.
+2. Open it in your browser.
+3. Select the starting node.
+4. Select the destination node.
+5. Choose Dijkstra's, A*, or IDA*.
+6. Run the path-finding operation.
+7. Inspect the calculated route and its total cost.
+8. Observe the highlighted path in the graph.
+9. Add connections where supported by the interface and try different
+   routes.
+Understanding the Results
+The application is designed to help users understand the relationship
+between graph structure and search strategy.
 
-Using the application
-Open the application in your browser.
-Choose a Start Person and a Target Person from the dropdowns.
-Select Dijkstra Search, A Search, or IDA Search.
-Click Calculate Path.
-Review the total path cost and the algorithm properties shown below the graph.
-Watch the route nodes and edges highlight in sequence.
-To extend the network, enter two person names, specify a positive connection weight, and click Add Connection.
-The initial graph is a sample weighted social network containing the people Alice, Bob, Charlie, Diana, Eve, Frank, Grace, Harry, Ivy, and Jack.
+When a route is found, the result includes the selected path and its
+total cost. The interface also presents algorithm characteristics such
+as time-complexity information, completeness, and optimality.
 
-Flask routes
-Method	Route	Purpose
-GET	/	Renders the main page and supplies the node list to the template.
-GET	/get_graph	Returns the current weighted graph as JSON.
-POST	/add_connection	Adds or updates a weighted, undirected connection.
-POST	/find_path	Runs the selected algorithm and returns the path, total cost, and algorithm properties.
-Example: find a path
-POST /find_path
+Theoretical complexity and measured performance are different
+things. Complexity describes how resource requirements grow as the
+input grows. A true performance benchmark would additionally require
+measuring execution time and memory usage over controlled test graphs.
+Do not interpret the theoretical comparison as a measured benchmark.
+Limitations and Future Improvements
+Possible extensions to the project include:
+- Add measured execution-time comparisons across identical test
+  graphs.
+- Track actual memory consumption for each algorithm.
+- Display the number of expanded nodes and explored edges.
+- Add graph-size controls to test algorithm behaviour on larger
+  networks.
+- Provide step-by-step animation of each algorithm's search process.
+- Allow users to create custom graphs and edge weights.
+- Add heuristic configuration and validation for A* and IDA*.
+- Export route results and comparison reports.
+Contributors
+Project contributors
+- Girish Kumar
+- Wasim
+Developed as part of the Computational Foundations of Artificial
+Intelligence (CFAI) course.
+::: {align="center"}
+**Network Router --- Shortest Path Visualizer**
 
-{
-  "start": "Alice",
-  "end": "Ivy",
-  "algorithm": "astar"
-}
-Supported algorithm values:
-
-dijkstra
-astar
-idastar
-The response contains the path, its total cost, and the configured algorithm properties.
-
-Example: add a connection
-POST /add_connection
-
-{
-  "person1": "Alice",
-  "person2": "Ivy",
-  "weight": 3
-}
-The connection is added in both directions, so the graph is treated as undirected.
-
-Current implementation notes
-The graph is stored in the Flask application's Python memory. Connections added through the interface are not saved to a database or file, so they are reset when the application process restarts.
-A* and IDA* use predefined coordinates for the original sample nodes. Newly added nodes do not receive custom coordinates automatically; the heuristic function falls back to (0, 0) for nodes without coordinates.
-The interface reports theoretical/configured algorithm properties. It does not currently run a controlled benchmark, record elapsed execution time, or show measured memory consumption.
-The graph uses positive weights in the provided sample and the interface's weight input is intended for positive values.
-Possible future improvements
-Add measured execution-time comparisons across the algorithms.
-Display theoretical and measured space usage separately.
-Assign coordinates or another meaningful heuristic to newly created nodes.
-Persist graph changes using SQLite or another database.
-Add input validation and clearer handling for invalid or disconnected paths.
+*Understanding graph search, one route at a time.*
+:::
