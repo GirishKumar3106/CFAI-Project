@@ -1,4 +1,3 @@
-::: {align="center"}
 # Network Router
 
 ### Shortest Path Visualizer
